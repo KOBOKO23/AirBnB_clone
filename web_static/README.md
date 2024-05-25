@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>0x01. AirBnB clone - Web static</title>
 </head>
 <body>
 <body style="color:Black; font-size:Bold"><h1>AirBnB clone - Web static</h1></>
