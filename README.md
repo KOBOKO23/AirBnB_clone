@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>hbnb_console<Simple HTML Page</title>
+    <title>hbnb_console<hbn_console</title>
 </head>
 <body>
     <h1>HBNB - The Console</h1>
