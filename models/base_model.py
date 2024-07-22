@@ -13,7 +13,7 @@ import models
 class BaseModel:
     """BaseModel Class"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """__init__ method & instantiation of class Basemodel
 
         Args:
@@ -24,36 +24,39 @@ class BaseModel:
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
-        if kwargs is not None and len(kwargs) > 0:
-            for k, v in kwargs.items():
-                if k == "__class__":
-                    continue
-                elif k in ["created_at", "updated_at"]:
-                    setattr(self, k, datetime.fromisoformat(v))
-                else:
-                    setattr(self, k, v)
-        else:
-            models.storage.new(self)
-
     def save(self):
         """Update updated_at with the current datetime."""
         self.updated_at = datetime.now()
-        models.storage.save()
 
     def to_dict(self):
         """
         returns a dictionary containing all
         keys/values of __dict__ of the instance
         """
-        bs_dict = (
-            {
-                k: (v.isoformat() if isinstance(v, datetime) else v)
-                for (k, v) in self.__dict__.items()
-            }
-        )
-        bs_dict["__class__"] = self.__class__.__name__
-        return bs_dict
+        inst_dict = self.__dict__.copy()
+        inst_dict["__class__"] = self.__class__.__name__
+        inst_dict["created_at"] = self.created_at.isoformat()
+        inst_dict["updated_at"] = self.updated_at.isoformat()
 
-    def __str__(self) -> str:
+        return inst_dict
+
+    def __str__(self):
         """should print/str representation of the BaseModel instance."""
-        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
+
+        class_name = self.__class__.name
+
+        return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
+
+
+    if __name__ == "__main__":
+        my_model = BaseModel()
+my_model.name = "My First Model"
+my_model.my_number = 89
+print(my_model)
+my_model.save()
+print(my_model)
+my_model_json = my_model.to_dict()
+print(my_model_json)
+print("JSON of my_model:")
+for key in my_model_json.keys():
+    print("\t{}: ({}) - {}".format(key, type(my_model_json[key]), my_model_json[key]))
