@@ -11,11 +11,18 @@ from datetime import datetime
 class BaseModel:
     """BaseModel Class"""
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """__init__ method & instantiation of class Basemodel"""
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == 'created_at' or key == 'updated_at':
+                    value = datetime.fromisoformat(value)
+                if key != '__class__':
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = self.created_at
 
     def save(self):
         """Update updated_at with the current datetime."""
@@ -49,3 +56,10 @@ if __name__ == "__main__":
     print("JSON of my_model:")
     for key in my_model_json.keys():
         print("\t{}: ({}) - {}".format(key, type(my_model_json[key]), my_model_json[key]))
+
+    # Recreate an instance using the dictionary
+    new_model = BaseModel(**my_model_json)
+    print(new_model)
+    print(type(new_model.created_at))
+    print(type(new_model.updated_at))
+    print(new_model == my_model)  # This should print False because they are different instances
