@@ -12,13 +12,15 @@ class BaseModel:
     """BaseModel Class"""
 
     def __init__(self, *args, **kwargs):
-        """__init__ method & instantiation of class Basemodel"""
+        """__init__ method & instantiation of class BaseModel"""
+        time_format = "%Y-%m-%dT%H:%M:%S.%f"
         if kwargs:
             for key, value in kwargs.items():
-                if key == 'created_at' or key == 'updated_at':
-                    value = datetime.fromisoformat(value)
-                if key != '__class__':
-                    setattr(self, key, value)
+                if key == '__class__':
+                    continue
+                if key in ["created_at", "updated_at"]:
+                    value = datetime.strptime(value, time_format)
+                setattr(self, key, value)
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
@@ -35,8 +37,8 @@ class BaseModel:
         """
         to_json = self.__dict__.copy()
         to_json['__class__'] = self.__class__.__name__
-        to_json['created_at'] = to_json['created_at'].isoformat()
-        to_json['updated_at'] = to_json['updated_at'].isoformat()
+        to_json['created_at'] = self.created_at.isoformat()
+        to_json['updated_at'] = self.updated_at.isoformat()
         return to_json
 
     def __str__(self):
