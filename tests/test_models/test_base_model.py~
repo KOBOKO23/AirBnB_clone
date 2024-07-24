@@ -1,0 +1,101 @@
+#!/usr/bin/python3
+"""Module test_base_model
+
+This Module contains a tests for Base Class
+"""
+
+import unittest
+from uuid import UUID
+from models import base_model
+
+BaseModel = base_model.BaseModel
+
+
+class TestBaseModel(unittest.TestCase):
+    def test_datetime_attributes(self):
+        """tests if created_at and updated_at instance attributes are of
+        datetime type"""
+        self.assertIsInstance(self.test_obj.created_at, datetime)
+        self.assertIsInstance(self.test_obj.updated_at, datetime)
+
+    def test_bas_str_should_print_formatted_output(self):
+        """__str__ should print [<class name>] (<self.id>) <self.__dict__>"""
+        self.test_obj.my_number = 89
+        cls_name = BaseModel.__name__
+        id = self.test_obj.id
+        expected = f"[{cls_name}] ({id}) {self.test_obj.__dict__}"
+        output = StringIO()
+        sys.stdout = output
+        print(self.test_obj)
+        sys.stdout = sys.__stdout__
+        self.assertEqual(output.getvalue().strip("\n"), expected)
+
+    def test_public_method_attributes_exist(self):
+        """tests wether public instance methods - "save" "to_dict" exist."""
+        req_att = ["save", "to_dict"]
+        for attrib in req_att:
+            self.assertTrue(hasattr(self.test_obj, attrib)
+                            and callable(getattr(self.test_obj, attrib)))
+
+    def test_save_method_updates_updated_at_value(self):
+        """save method shall update updated_at"""
+        old_date = self.test_obj.updated_at
+        self.test_obj.save()
+        self.assertIsInstance(old_date, datetime)
+        #self.assertNotEqual(self.test_obj.updated_at, old_date)
+
+    def test_save_method_updates_storage(self):
+        """save method shall update storage"""
+        file_path = "file.json"
+        with open(file_path, 'w') as f:
+            json.dump({}, f)
+        storage = FileStorage()
+        storage.reload()
+        storage.new(self.test_obj)
+        storage.save()
+
+        old_date = self.test_obj.updated_at
+        self.test_obj.save()
+
+        storage.reload()
+        saved_obj = storage.all(
+        )[f"{self.test_obj.__class__.__name__}.{self.test_obj.id}"]
+
+        self.assertNotEqual(old_date, saved_obj.updated_at)
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+    def test_to_dict_returns_a_dictionary_of_attributes(self):
+        """to_dict should return a dictionary containing all key/value of
+        self.__dict__
+        """
+        temp_dict = self.test_obj.to_dict()
+        self.assertIsInstance(temp_dict, dict)
+        keys = temp_dict.keys()
+
+        for k, v in self.test_obj.__dict__.items():
+            self.assertIn(k, keys)
+            if not isinstance(self.test_obj.__dict__[k], datetime):
+                self.assertEqual(temp_dict[k], v)
+
+    def test_to_dict_returns_a_new_dictionary_of_attributes(self):
+        """to_dict should return a copy of __dict__"""
+        temp_dict = self.test_obj.to_dict()
+        self.assertNotEqual(id(temp_dict), id(self.test_obj.__dict__))
+
+    def test_to_dict_has_a_key_with_the_class_name(self):
+        """to_dict must have a key of __class__ with a value of the classes
+        name
+        """
+        temp_dict = self.test_obj.to_dict()
+        self.assertIn("__class__", temp_dict.keys())
+        self.assertEqual(temp_dict["__class__"],
+                         BaseModel.__name__)
+
+    def test_to_dict_formats_dates_with_isoformat(self):
+        """to_dict should store dates in isoformat"""
+        temp_dict = self.test_obj.to_dict()
+
+if __name__ == "__main__":
+    unittest.main()

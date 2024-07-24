@@ -4,7 +4,7 @@
 This Module contains a definition for BaseModel Class
 """
 
-import uuid
+from uuid import uuid4
 from datetime import datetime
 
 
@@ -12,15 +12,10 @@ class BaseModel:
     """BaseModel Class"""
 
     def __init__(self):
-        """__init__ method & instantiation of class Basemodel
-
-        Args:
-            *args.
-            **kwargs (dict): Key/value pairs
-        """
-        self.id = str(uuid.uuid4())
+        """__init__ method & instantiation of class Basemodel"""
+        self.id = str(uuid4())
         self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        self.updated_at = self.created_at
 
     def save(self):
         """Update updated_at with the current datetime."""
@@ -28,22 +23,18 @@ class BaseModel:
 
     def to_dict(self):
         """
-        returns a dictionary containing all
+        Returns a dictionary containing all
         keys/values of __dict__ of the instance
         """
-        inst_dict = self.__dict__.copy()
-        inst_dict["__class__"] = self.__class__.__name__
-        inst_dict["created_at"] = self.created_at.isoformat()
-        inst_dict["updated_at"] = self.updated_at.isoformat()
-
-        return inst_dict
+        to_json = self.__dict__.copy()
+        to_json['__class__'] = self.__class__.__name__
+        to_json['created_at'] = to_json['created_at'].isoformat()
+        to_json['updated_at'] = to_json['updated_at'].isoformat()
+        return to_json
 
     def __str__(self):
-        """should print/str representation of the BaseModel instance."""
-
-        class_name = self.__class__.__name__
-
-        return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
+        """Print/str representation of the BaseModel instance."""
+        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
 
 if __name__ == "__main__":
