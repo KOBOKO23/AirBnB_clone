@@ -7,14 +7,13 @@ from models.base_model import BaseModel
 
 class Filestorage:
     """
-
-    """
     __file_path = "file.json"
     __objects = {}
+    """
 
     def new(self, obj):
         """
-
+        set __objects obj with keys
         """
         obj_cls_name = obj.__class__.__name__
         key = "{}.{}".format(obj_cls_name, obj.id)
@@ -22,13 +21,14 @@ class Filestorage:
 
     def all(self):
         """
+        return the dictionary __objects.
 
         """
         return Filestorage.__objects
 
     def save(self):
         """
-
+        serilize __objects to json file.
         """
         all_objs = Filestorage.__objects
         obj_dict = {}
@@ -40,7 +40,7 @@ class Filestorage:
 
     def reload(self):
         """
-
+        Deserialize the json file
         """
         if os.path.isfile(Filestorage.__file_path):
 
@@ -56,5 +56,5 @@ class Filestorage:
 
                         Filestorage.__objects[key] = instance
 
-                except Exception
-                pass
+                except Exception:
+                    pass
