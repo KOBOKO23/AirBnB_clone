@@ -20,7 +20,7 @@ class HBNBCommand(cmd.Cmd):
         """
         Help for the quit command.
         """
-        print("Quit command to exit the program")
+        print("Quit command to exit the program\n")
 
     def do_EOF(self, arg):
         """
@@ -33,7 +33,7 @@ class HBNBCommand(cmd.Cmd):
         """
         Help for the End of File (EOF) command.
         """
-        print("Handle End of File (EOF) signal to exit the program")
+        print("Handle End of File (EOF) signal to exit the program\n")
 
     def emptyline(self):
         """
