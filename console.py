@@ -35,7 +35,7 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         """
-        Override emptyline to do nothing on empty input.
+        Override the default behavior for empty lines.
         """
         pass
 
