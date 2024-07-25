@@ -2,7 +2,6 @@
 
 import json
 import os
-from models.base_model import BaseModel
 
 class FileStorage:
     """Serializes instances to a JSON file & deserializes back to instances."""
@@ -32,10 +31,12 @@ class FileStorage:
             with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
                 try:
                     obj_dict = json.load(file)
+                    from models.base_model import BaseModel
                     for key, value in obj_dict.items():
                         cls_name = key.split('.')[0]
-                        cls = globals()[cls_name]
-                        self.new(cls(**value))
+                        cls = globals().get(cls_name)
+                        if cls:
+                            self.new(cls(**value))
                 except Exception as e:
                     print(f"Failed to load from {FileStorage.__file_path}: {e}")
 
