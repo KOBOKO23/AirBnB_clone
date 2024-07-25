@@ -7,10 +7,6 @@ from models.engine.file_storage import FileStorage
 import models
 
 class TestFileStorageInstantiation(unittest.TestCase):
-    """
-    Testing the instantiation of FileStorage.
-    """
-
     def test_FileStorage_instantiation_no_args(self):
         self.assertIsInstance(FileStorage(), FileStorage)
 
@@ -21,13 +17,12 @@ class TestFileStorageInstantiation(unittest.TestCase):
     def test_storage_initializes(self):
         self.assertIsInstance(models.storage, FileStorage)
 
-
 class TestFileStorage(unittest.TestCase):
-
     def setUp(self):
         self.test_file = "test_file.json"
         models.storage = FileStorage()
         models.storage._FileStorage__file_path = self.test_file
+        models.storage._FileStorage__objects = {}
 
     def tearDown(self):
         if os.path.exists(self.test_file):
@@ -80,7 +75,6 @@ class TestFileStorage(unittest.TestCase):
             os.remove(self.test_file)
         models.storage.reload()
         self.assertEqual(models.storage.all(), {})
-
 
 if __name__ == '__main__':
     unittest.main()

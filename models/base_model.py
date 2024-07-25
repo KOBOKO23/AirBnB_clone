@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 """Module base_model
 
 This Module contains a definition for BaseModel Class
@@ -6,6 +7,7 @@ This Module contains a definition for BaseModel Class
 
 from uuid import uuid4
 from datetime import datetime
+import models
 
 class BaseModel:
     """BaseModel Class"""
@@ -31,8 +33,7 @@ class BaseModel:
     def save(self):
         """Update updated_at with the current datetime."""
         self.updated_at = datetime.now()
-        from models import storage
-        storage.save()
+        models.storage.save()
 
     def to_dict(self):
         """
