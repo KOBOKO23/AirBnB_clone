@@ -14,12 +14,6 @@ class HBNBCommand(cmd.Cmd):
         """
         return True
 
-    def help_quit(self, arg=None):
-        """
-        Help for the quit command.
-        """
-        print("Quit command to exit the program")
-
     def do_EoF(self, arg):
         """
         Handle End of File (EOF) signal to exit the program.
@@ -27,6 +21,23 @@ class HBNBCommand(cmd.Cmd):
         print()
         return True
 
-if __name__ == "__main__":
-    HBNBCommand().cmdloop()
+    def help_quit(self):
+        """
+        Help for the quit command.
+        """
+        print("Quit command to exit the program")
 
+    def help_EoF(self):
+        """
+        Help for the End of File (EOF) command.
+        """
+        print("End of File (EOF) signal to exit the program")
+
+    def emptyline(self):
+        """
+        Override emptyline to do nothing on empty input.
+        """
+        pass
+
+if __name__ == '__main__':
+    HBNBCommand().cmdloop()
